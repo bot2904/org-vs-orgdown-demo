@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Org-mode vs Orgdown | Syntax Compare</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <style>
+        :root {
+            --bg: #050507;
+            --surface: rgba(15, 15, 20, 0.7);
+            --primary: #00f2ff;
+            --secondary: #ff00e5;
+            --glow: rgba(0, 242, 255, 0.15);
+        }
+
+        body {
+            background-color: var(--bg);
+            color: #e0e0e0;
+            font-family: 'Inter', sans-serif;
+            background-image: 
+                radial-gradient(circle at 2px 2px, rgba(255,255,255,0.03) 1px, transparent 0);
+            background-size: 40px 40px;
+        }
+
+        .syntax-font {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .glass {
+            background: var(--surface);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
+        }
+
+        .neon-border-cyan {
+            border: 1px solid var(--primary);
+            box-shadow: 0 0 15px var(--glow);
+        }
+
+        .neon-border-magenta {
+            border: 1px solid var(--secondary);
+            box-shadow: 0 0 15px rgba(255, 0, 229, 0.15);
+        }
+
+        .glow-text-cyan {
+            text-shadow: 0 0 10px var(--primary);
+        }
+
+        .glow-text-magenta {
+            text-shadow: 0 0 10px var(--secondary);
+        }
+
+        .gradient-text {
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .scanline {
+            width: 100%;
+            height: 2px;
+            background: rgba(0, 242, 255, 0.1);
+            position: fixed;
+            z-index: 100;
+            pointer-events: none;
+            animation: scan 8s linear infinite;
+        }
+
+        @keyframes scan {
+            0% { top: -2%; }
+            100% { top: 100%; }
+        }
+
+        .compare-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .compare-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .token-info {
+            font-size: 0.7rem;
+            opacity: 0.6;
+            letter-spacing: 0.05em;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+    <div class="scanline"></div>
+
+    <div id="app" class="flex-grow container mx-auto px-4 py-12 max-w-6xl">
+        <header class="text-center mb-16">
+            <h1 class="text-5xl md:text-7xl font-bold mb-4 tracking-tighter gradient-text">
+                SYNTAX_MATRIX
+            </h1>
+            <p class="text-xl text-gray-400 font-light uppercase tracking-widest">
+                Org-mode <span class="text-cyan-400 mx-2">VS</span> Orgdown
+            </p>
+        </header>
+
+        <div class="space-y-12">
+            <div v-for="item in comparisons" :key="item.feature" class="group">
+                <div class="flex items-center mb-4">
+                    <div class="h-[1px] flex-grow bg-gradient-to-r from-transparent to-gray-800"></div>
+                    <h2 class="px-6 text-sm font-bold tracking-widest uppercase text-gray-500 group-hover:text-white transition-colors">
+                        {{ item.feature }}
+                    </h2>
+                    <div class="h-[1px] flex-grow bg-gradient-to-l from-transparent to-gray-800"></div>
+                </div>
+
+                <div class="compare-grid">
+                    <!-- Org-mode side -->
+                    <div class="glass p-6 rounded-lg transition-all duration-500 hover:neon-border-cyan group-hover:translate-y-[-4px]">
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-xs font-bold text-cyan-400 tracking-widest uppercase">Org-mode</span>
+                            <span class="text-[10px] text-gray-600 uppercase">Legacy System</span>
+                        </div>
+                        <pre class="syntax-font text-sm leading-relaxed overflow-x-auto p-4 bg-black/40 rounded border border-white/5">{{ item.orgmode }}</pre>
+                    </div>
+
+                    <!-- Orgdown side -->
+                    <div class="glass p-6 rounded-lg transition-all duration-500 hover:neon-border-magenta group-hover:translate-y-[-4px]">
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-xs font-bold text-magenta-500 tracking-widest uppercase">Orgdown</span>
+                            <span class="text-[10px] text-gray-600 uppercase">Standardized</span>
+                        </div>
+                        <pre class="syntax-font text-sm leading-relaxed overflow-x-auto p-4 bg-black/40 rounded border border-white/5">{{ item.orgdown }}</pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="mt-20 border-t border-white/5 bg-black/40 backdrop-blur-md py-12">
+        <div class="container mx-auto px-4 text-center">
+            <div class="mb-8 flex justify-center space-x-8 opacity-40">
+                <div class="w-12 h-[1px] bg-white"></div>
+                <div class="w-2 h-2 rounded-full bg-cyan-500"></div>
+                <div class="w-2 h-2 rounded-full bg-magenta-500"></div>
+                <div class="w-12 h-[1px] bg-white"></div>
+            </div>
+            
+            <p class="text-gray-500 text-sm mb-4 max-w-2xl mx-auto leading-relaxed">
+                This application was autonomously synthesized as a live demonstration of the <span class="text-cyan-400">pi coding agent</span> during the <strong>STG LLM Meetup</strong> in Graz. 
+            </p>
+            
+            <div class="token-info space-y-1">
+                <p>MODEL: <span class="text-magenta-400">CLAUDE-3.5-SONNET</span></p>
+                <p>PROCESS_TIME: <span class="text-green-400">~120s</span></p>
+                <p>LOCATION: GRAZ, AUSTRIA</p>
+                <p class="pt-4 text-[9px] text-gray-700">NEURAL ARCHITECTURE INITIALIZED. ALL SYSTEMS NOMINAL.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const { createApp } = Vue;
+
+        createApp({
+            data() {
+                return {
+                    comparisons: [
+                        {
+                            feature: 'Headings',
+                            orgmode: '* Heading 1\n** Heading 2\n*** Heading 3',
+                            orgdown: '* Heading 1\n** Heading 2\n*** Heading 3\n(Similar, but strictly space-separated)'
+                        },
+                        {
+                            feature: 'Emphasis',
+                            orgmode: '*bold* /italic/ _underline_ \n+strikethrough+ ~code~ =verbatim=',
+                            orgdown: '*bold* /italic/ _underline_ \n+strikethrough+ ~code~ =verbatim='
+                        },
+                        {
+                            feature: 'Checkboxes',
+                            orgmode: '- [ ] To do\n- [X] Done\n- [-] In progress',
+                            orgdown: '- [ ] To do\n- [x] Done (Lowercase x allowed)'
+                        },
+                        {
+                            feature: 'Links',
+                            orgmode: '[[https://orgmode.org][Org Mode]]\n[[file:path/to/file]]',
+                            orgdown: '[[https://orgdown.org][Orgdown]]\n(Strict URI compliance focus)'
+                        },
+                        {
+                            feature: 'Source Blocks',
+                            orgmode: '#+BEGIN_SRC python\nprint("Hello")\n#+END_SRC',
+                            orgdown: '```python\nprint("Hello")\n```\n(Orgdown 1.0 focuses on MD-style triple backticks for compatibility)'
+                        },
+                        {
+                            feature: 'Metadata',
+                            orgmode: '#+TITLE: My Document\n#+AUTHOR: Agent',
+                            orgdown: '--- (Frontmatter style)\ntitle: My Document\n---'
+                        }
+                    ]
+                }
+            }
+        }).mount('#app')
+    </script>
+</body>
+</html>
